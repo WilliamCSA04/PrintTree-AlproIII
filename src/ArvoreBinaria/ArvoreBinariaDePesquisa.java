@@ -364,48 +364,54 @@ public class ArvoreBinariaDePesquisa {
     }
 
     public String printTree() {
-        if (getAltura() == -1) { //See if the tree is empty
+        if (getAltura() == -1) { 
             return "Arvore Vazia";
         }
-        if (getAltura() == 0) { //Check if only have one node in the tree;
+        if (getAltura() == 0) { 
             return raiz.chave + "";
         }
         return printTree0(raiz);
     }
 
-    //Sendo feito...
+    /**
+     * @see #tamanhoSubarvores(ArvoreBinaria.ArvoreBinariaDePesquisa.Nodo) 
+     * @see #calculaAlinhamento(char[], int) 
+     * @param nodo
+     * @return 
+     */
     private String printTree0(Nodo nodo) {
-        Queue<Nodo> q = new LinkedList<>();
-        for (int i = 0; i <= getAltura(); i++) {
+        Queue<Nodo> q = new LinkedList<>(); //Criando fila dos nodos
+        for (int i = 0; i <= getAltura(); i++) { //Armazenando todos os nodos dentro da fila q
             q.addAll(getNivel(i));
         }
-        String arvore = "";
-        String linha = "";
+        String arvore = ""; //Arvore printada, vai ser retornada no final
+        String linha = ""; //Linha atual que será usada para determinar os espaços necessarios.
 
-        Queue<Integer> espacos = new LinkedList<>();
-        espacos.add(0);
-        Queue<Nodo> nodosNoNivel = new LinkedList<>();
-        int nivel = 0;
-        nodosNoNivel.addAll(getNivel(nivel));
-        while (!q.isEmpty()) {
-            nodo = q.remove();
-            boolean esquerdo = nodo.esquerdo != null;
-            boolean direito = nodo.direito != null;
-            int espaco = espacos.poll();
-            int tamanhoNodoAnterior = 1;
-            if (!esquerdo && !direito) {
-                int count = calculaAlinhamento(arvore.substring(arvore.lastIndexOf("\n") + 1).toCharArray(), tamanhoNodoAnterior);
+        Queue<Integer> espacos = new LinkedList<>(); //Fila com os espaços necessarios.
+        espacos.add(0); //Como o nodo raiz não tem pai (;-;) é adicionado 0 como espaço padrao, só para a fila ter um valor inicial
+        Queue<Nodo> nodosNoNivel = new LinkedList<>(); //Fila com os nodos no nivel atual da arvore
+        int nivel = 0; //Nivel atual da arvore;
+        nodosNoNivel.addAll(getNivel(nivel)); //Adicionar o raiz a arvore.
+        while (!q.isEmpty()) { //While principal, quando a fila de Nodos estiver vazia o codigo terá terminado e a arvore será retornada
+            nodo = q.remove(); //Obtem o nodo atual
+            boolean esquerdo = nodo.esquerdo != null; //Testa se tem filho da esquerda
+            boolean direito = nodo.direito != null; //Testa se tem filho da direita
+            int espaco = espacos.poll(); //Pega o espaço necessario da fila;
+            int tamanhoNodoAnterior = 1; //Tamanho do nodo anterior (Eu acho que ele não esta sendo usado corretamente, mas o codigo funciona igual)
+            if (!esquerdo && !direito) { //Testa se o nodo não tem filhos
+                int count = calculaAlinhamento(arvore.substring(arvore.lastIndexOf("\n") + 1).toCharArray(), tamanhoNodoAnterior); //Metodo para fazer calculos de alinhamento
 
-                for (int i = 0; i < (espaco - count); i++) {
+                for (int i = 0; i < (espaco - count); i++) { //Coloca os espaços necessarios até chegar abaixo do "|" da linha anterior
                     arvore += " ";
                 }
-                arvore += nodo.chave;
+                arvore += nodo.chave; //Coloca o numero
             } else {
-                if (esquerdo && direito) {
+                if (esquerdo && direito) { //Testa se tem os dois filhos
 
-                    int count = calculaAlinhamento(arvore.substring(arvore.lastIndexOf("\n") + 1).toCharArray(), tamanhoNodoAnterior);
-                    int subarvore = tamanhoSubarvores(nodo.esquerdo);
-                    if (nodo.equals(raiz)) {
+                    int count = calculaAlinhamento(arvore.substring(arvore.lastIndexOf("\n") + 1).toCharArray(), tamanhoNodoAnterior); //Metodo para fazer calculos de alinhamento
+                    
+                    if (nodo.equals(raiz)) { //Execução para quando o numero é o raiz
+                        int subarvore = tamanhoSubarvores(nodo.esquerdo); //Metodo que calcula o tamanho de todas as subarvores do nodo passado por paramentro, alem do tamanho do proprio nodo
                         for (int i = 0; i < subarvore; i++) {
                             arvore += " ";
                         }
@@ -419,8 +425,8 @@ public class ArvoreBinariaDePesquisa {
                             arvore += "-";
                         }
                         arvore += "|";
-                    } else {
-                        if (espaco % 2 == 0) {
+                    } else {//Caso não seja o raiz
+                        if (espaco % 2 == 0) { //Faz alguns ajustes no espaco, distribuindo mais corretamente os caracteres como "-" e " "
                             espaco = espaco / 2 - 1;
                         } else {
                             espaco /= 2;
@@ -440,7 +446,8 @@ public class ArvoreBinariaDePesquisa {
                     }
 
                 } else {
-                    if (esquerdo) {
+                    if (esquerdo) { //Se só tem filho na esquerda
+                        //O funcionamento interno dos ifs e metodos são os mesmo do anterior
                         int count = calculaAlinhamento(arvore.substring(arvore.lastIndexOf("\n") + 1).toCharArray(), tamanhoNodoAnterior);
                         if (nodo.equals(raiz)) {
                             int subarvore = tamanhoSubarvores(nodo.esquerdo);
@@ -468,6 +475,7 @@ public class ArvoreBinariaDePesquisa {
 
                         arvore += Integer.toString(nodo.chave);
                     } else {
+                        //O funcionamento interno dos ifs e metodos são os mesmo do anterior
                         if (direito) {
                             if (nodo.equals(raiz)) {
                                 int subarvore = tamanhoSubarvores(nodo.direito);
@@ -504,34 +512,34 @@ public class ArvoreBinariaDePesquisa {
                 }
 
             }
-            nodosNoNivel.poll();
-            if (nodosNoNivel.isEmpty()) {
+            nodosNoNivel.poll();//Retira um nodo da fila
+            if (nodosNoNivel.isEmpty()) { //Testa se há nodos nessa fila, se não houver, é porque a linha acabou e o proximo nodo pertence a outro nivel
                 if (nodo.equals(raiz)) {
-                    linha = arvore;
-                    for (int i = linha.indexOf("|"); i != -1; i = linha.indexOf("|")) {
-                        espacos.add(i);
-                        linha = linha.substring(i + 1);
+                    linha = arvore; //Iguala a linha atual a arvore, já que ela só tem uma linha atualmente
+                    for (int i = linha.indexOf("|"); i != -1; i = linha.indexOf("|")) { //For vai calculando a distancia entre o inicio da linha e o caracter "|" para que o nodo seguinte fique em baixo dele
+                        espacos.add(i); //Adiciona o resultado aos espacos
+                        linha = linha.substring(i + 1); //Reduz a string para pegar o proximo index de "|";
                     }
-                } else {
-                    linha = arvore.substring(arvore.lastIndexOf("\n") + 1);
+                } else { //Faz a mesma coisa que o anterior, só muda a priemira linha, pois a String arvore já tem mais de uma linha (Provavelmente da para otimizar)
+                    linha = arvore.substring(arvore.lastIndexOf("\n") + 1); 
                     for (int i = linha.indexOf("|"); i != -1; i = linha.indexOf("|")) {
                         espacos.add(i);
                         linha = linha.substring(i + 1);
                     }
 
                 }
-                arvore += "\n";
+                arvore += "\n"; 
 
-                nivel++;
-                nodosNoNivel.addAll(getNivel(nivel));
+                nivel++; //Atualiza o nivel da arvore
+                nodosNoNivel.addAll(getNivel(nivel));//Adiciona todos os nodos do nivel da arvore
             }
-            tamanhoNodoAnterior = Integer.toString(nodo.chave).length();
+            //tamanhoNodoAnterior = Integer.toString(nodo.chave).length(); //Tem que arrumar isso aqui de uma maneira melhor, talvez resolva os problemas dos alinhamentos sem ter que ficar fazendo tanto calculo.
         }
 
         return arvore;
     }
 
-    private int tamanhoSubarvores(Nodo nodo) {
+    private int tamanhoSubarvores(Nodo nodo) { //Calcula o tamanho do nodo atual e de todos os seus filhos
         int size = Integer.toString(nodo.chave).length();
         if (nodo.esquerdo != null) {
             size += tamanhoSubarvores(nodo.esquerdo);
@@ -543,7 +551,7 @@ public class ArvoreBinariaDePesquisa {
         return size;
     }
 
-    private int calculaAlinhamento(char[] linha, int tamanhoNodoAnterior) {
+    private int calculaAlinhamento(char[] linha, int tamanhoNodoAnterior) { //Faz um calculo para ajuste no alinhamento
         int count = 0;
         for (int i = linha.length - 1; i >= 0; i--) {
             char c = linha[i];
