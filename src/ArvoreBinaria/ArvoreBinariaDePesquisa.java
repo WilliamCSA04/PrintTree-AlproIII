@@ -454,7 +454,7 @@ public class ArvoreBinariaDePesquisa {
                             espaco /= 2;
                             z+=2;
                         }
-                        z+=2;
+                        z+=2;		
                         for (int i = 0; i < espaco; i++) {
                             arvore += " ";
                             z+=5;
@@ -539,8 +539,9 @@ public class ArvoreBinariaDePesquisa {
                                 z+=2;
 
                             }else{
+                                
                                 z+=3;
-                                for (int i = 0; i < espaco-count; i++) {
+                                for (int i = 0; i < espaco-1; i++) {
                                     arvore += " ";
                                     z+=6;
                                 }
@@ -553,8 +554,9 @@ public class ArvoreBinariaDePesquisa {
                                     espaco /= 2;
                                     z+=2;
                                 }
+				
                                 z+=3;
-                                for (int i = 0; i < espaco-count; i++) {
+                                for (int i = 0; i < espaco-count-3; i++) {
                                     arvore += "-";
                                     z+=6;
                                 }
